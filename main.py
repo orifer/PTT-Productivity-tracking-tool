@@ -48,7 +48,7 @@ def confirm():
 def hide_popup():
     root.withdraw()
     # Schedule the popup window to appear again after some time
-    root.after(POPUP_INTERVAL * 1000, check_and_show_popup)
+    check_and_show_popup()
 
 # Function to check if current time is within start and end time, and show popup if so
 def check_and_show_popup():
