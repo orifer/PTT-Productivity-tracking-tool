@@ -44,6 +44,11 @@ def confirm():
     # Hide the popup window
     hide_popup()
 
+# Schedule the popup window to appear again after 5 minutes
+def postpone():
+    hide_popup()
+    root.after(60 * 5 * 1000, check_and_show_popup)
+
 # Function to hide the popup window
 def hide_popup():
     root.withdraw()
@@ -95,10 +100,18 @@ task_dropdown = ttk.Combobox(root, textvariable=task_var, font=("Helvetica", 12)
 task_dropdown['values'] = list(task_list.keys())
 task_dropdown.pack(pady=5)
 
-confirm_button = ttk.Button(root, text="Confirm", command=confirm, style="TButton")
-confirm_button.pack(pady=10)
+# Create a frame to contain the buttons
+button_frame = ttk.Frame(root, padding=5)
+button_frame.pack()
 
-# Style for the Confirm button
+# Add buttons to the frame
+confirm_button = ttk.Button(button_frame, text="Confirm", command=confirm, style="TButton")
+confirm_button.grid(row=0, column=0, padx=5)
+
+postpone_button = ttk.Button(button_frame, text="Postpone", command=postpone, style="TButton")
+postpone_button.grid(row=0, column=1, padx=5)
+
+# Style for the buttons
 style = ttk.Style()
 style.configure("TButton", font=("Helvetica", 12))
 
