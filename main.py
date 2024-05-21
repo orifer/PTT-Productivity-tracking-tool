@@ -41,19 +41,18 @@ def confirm():
     # Save updated daily task counts to JSON file
     with open("daily_task_counts.json", "w", encoding='utf-8') as file:
         json.dump(daily_task_counts, file, indent=4)  # Format JSON for readability
+    
     # Hide the popup window
-    hide_popup()
+    root.withdraw()
+
+    # Schedule the popup window to appear again after some time
+    root.after(POPUP_INTERVAL * 1000, check_and_show_popup)
 
 # Schedule the popup window to appear again after 5 minutes
 def postpone():
-    hide_popup()
-    root.after(60 * 5 * 1000, check_and_show_popup)
-
-# Function to hide the popup window
-def hide_popup():
+    # Hide the popup window
     root.withdraw()
-    # Schedule the popup window to appear again after some time
-    root.after(POPUP_INTERVAL * 1000, check_and_show_popup)
+    root.after(60 * 5 * 1000, check_and_show_popup)
 
 # Function to check if current time is within start and end time, and show popup if so
 def check_and_show_popup():
