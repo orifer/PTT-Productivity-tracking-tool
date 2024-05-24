@@ -1,19 +1,10 @@
 {
-    "Self training": {
-      "phase_code": "AUTO",
-      "task_code": "hours"
+    "CUSTOM_TASKS": {
+        "[Custom] Dummy task": {
+            "phase_code": "AUTO",
+            "task_code": ""
+        },
     },
-    "Receiving training": {
-        "phase_code": "TRAINED",
-        "task_code": "hours"
-    },
-    "E-6xxxx - Coding": {
-      "phase_code": "CODE",
-      "task_code": "AP 1.15"
-    },
-    "Misc": {
-        "phase_code": "misc",
-        "task_code": "misc"
+    "REDMINE_TASKS": {
     }
-  }
-  
+}
