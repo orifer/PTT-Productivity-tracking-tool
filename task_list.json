@@ -3,7 +3,7 @@
         "[Custom] Dummy task": {
             "phase_code": "AUTO",
             "task_code": ""
-        },
+        }
     },
     "REDMINE_TASKS": {
     }
