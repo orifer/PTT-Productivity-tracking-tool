@@ -46,7 +46,7 @@ class App:
     SUB_PHASE_ID = 108
     ON_CALL_ID = 109
     CALL_IN_ID = 110
-    FIVE_MINUTES = 60 * 5 * 1000
+    FIVE_MINUTES = 60 * 5
     activities_dict = {
         '-': 27,
         'AD': 8,
