@@ -11,7 +11,7 @@ from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.styles import Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
-from PIL import Image, ImageDraw
+from PIL import Image, ImageTk
 import pystray
 from pystray import MenuItem as item
 
@@ -75,9 +75,60 @@ class App:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("PTT - Productivity tracking tool v24.06.24")
-        self.root.configure(bg="#f0f0f0")
 
+        # Define the interface elements and interactions
+        self.root.title("PTT - Productivity tracking tool v24.06.24")
+        self.root.attributes("-alpha", 0)
+
+        # Remove window decorations
+        root.overrideredirect(True)
+        transparentcolor = 'grey'
+        self.root.attributes("-transparentcolor", transparentcolor)
+
+        # Load image
+        bg_image_path = "background_clippy.png"
+        bg_image = Image.open(bg_image_path)
+        tk_image = ImageTk.PhotoImage(bg_image)
+        
+        # Keep a reference to the image to prevent it from being garbage collected
+        root.tk_image = tk_image
+
+        # Create a Canvas widget
+        self.canvas = tk.Canvas(root, width=bg_image.width, height=bg_image.height, bg=transparentcolor, highlightthickness=0)
+        self.canvas.pack(fill="both", expand=True)
+        
+        # Display the image on the canvas
+        self.canvas.create_image(0, 0, anchor=tk.NW, image=tk_image)
+        x_pos = 205
+
+        # Create the label
+        self.label = ttk.Label(self.root, text="What are you doing my boi?", font=("Helvetica", 14), background="#ffffc9")
+        self.label_window = self.canvas.create_window(x_pos, 15, anchor=tk.N, window=self.label)
+        
+        # Create the dropdown
+        self.task_var = tk.StringVar()
+        self.task_dropdown = ttk.Combobox(self.root, textvariable=self.task_var, font=("Helvetica", 9), width=50, state="readonly")
+        self.task_dropdown_window = self.canvas.create_window(x_pos, 60, anchor=tk.N, window=self.task_dropdown)
+
+        # Create the button frame
+        self.button_frame = ttk.Frame(self.root, style="custom.TFrame", padding=5)
+        self.button_frame_window = self.canvas.create_window(x_pos, 100, anchor=tk.N, window=self.button_frame)
+        
+        # Create the buttons
+        self.confirm_button = ttk.Button(self.button_frame, text="Confirm", command=self.confirm, style="TButton")
+        self.confirm_button.grid(row=0, column=0, padx=10)
+        
+        self.postpone_button = ttk.Button(self.button_frame, text="Postpone", command=self.postpone, style="TButton")
+        self.postpone_button.grid(row=0, column=1, padx=10)
+
+        # Styles
+        # Create a custom style for the frame
+        frame_style = ttk.Style()
+        frame_style.configure("custom.TFrame", background="#ffffc9")
+
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+        # Main program logic
         self.task_list = []
         self.redmine_issues = {}
         
@@ -85,26 +136,6 @@ class App:
         self.tray_icon = None
         self.show_tray_icon()
         self.on_tick()
-
-        ttk.Label(self.root, text="What are you doing my boi?", font=("Helvetica", 14), background="#f0f0f0").pack(pady=10)
-        self.task_var = tk.StringVar()
-        self.task_dropdown = ttk.Combobox(self.root, textvariable=self.task_var, font=("Helvetica", 12), width=40, state="readonly")
-        self.task_dropdown.pack(pady=5)
-
-        button_frame = ttk.Frame(self.root, padding=5)
-        button_frame.pack()
-
-        confirm_button = ttk.Button(button_frame, text="Confirm", command=self.confirm, style="TButton")
-        confirm_button.grid(row=0, column=0, padx=5)
-
-        postpone_button = ttk.Button(button_frame, text="Postpone", command=self.postpone, style="TButton")
-        postpone_button.grid(row=0, column=1, padx=5)
-
-        style = ttk.Style()
-        style.configure("TButton", font=("Helvetica", 12))
-
-        self.root.withdraw()
-        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.redmine = Redmine(self.redmine_url, key=self.api_key)
         self.load_task_list()
@@ -302,25 +333,24 @@ class App:
 
 
     def show_popup(self):
-        try:
-            root.geometry("400x150")
-            root.deiconify()
-            root.attributes("-topmost", True)
-            root.update_idletasks()
-            screen_width = root.winfo_screenwidth()
-            screen_height = root.winfo_screenheight()
-            window_width = root.winfo_width()
-            window_height = root.winfo_height()
-            x = screen_width - window_width - 10
-            y = screen_height - window_height - 10
-            root.geometry(f"+{x}+{y}")
+        self.root.deiconify()
+        self.root.attributes("-topmost", True)
+        self.root.update_idletasks()
 
-            for i in range(60):
-                root.geometry(f"+{x}+{screen_height - (i * 4)}")
-                root.update()
-                root.after(2)
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to show popup: {e}")
+        # Move to the bottom right
+        margin = 10
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        window_width = self.root.winfo_width()
+        window_height = self.root.winfo_height()
+        x = screen_width - window_width - 10
+        y = screen_height - window_height - 10
+        self.root.geometry(f"+{x-margin}+{y-margin}")
+
+        for i in range(10):
+            self.root.attributes("-alpha", i / 10)
+            self.root.update()
+            self.root.after(60)
 
 
     def load_task_list(self):
