@@ -75,7 +75,7 @@ class App:
 
     def __init__(self, root):
         self.root = root
-        self.root.title("PTT - Productivity tracking tool v1")
+        self.root.title("PTT - Productivity tracking tool v24.06.24")
         self.root.configure(bg="#f0f0f0")
 
         self.task_list = []
@@ -448,13 +448,12 @@ class App:
 
 
     def show_tray_icon(self):
-        # Create an image for the tray icon
-        image = Image.new('RGB', (64, 64), color=(73, 109, 137))
-        d = ImageDraw.Draw(image)
-        d.rectangle((0, 0, 64, 64), fill=(255, 255, 255))
+        # Load an image from a file
+        image_path = "icon.png"
+        image = Image.open(image_path)
 
         # Create the tray icon
-        self.tray_icon = pystray.Icon("my_app", image, "PTT")
+        self.tray_icon = pystray.Icon("ptt_icon", image, "PTT - Productivity Tracking Tool v24.06.24")
         self.update_menu()
         self.tray_icon.run_detached()
     
