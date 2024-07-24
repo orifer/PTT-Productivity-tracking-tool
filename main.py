@@ -137,7 +137,7 @@ class App:
         self.show_tray_icon()
         self.on_tick()
 
-        self.redmine = Redmine(self.redmine_url, key=self.api_key)
+        self.redmine = Redmine(self.redmine_url, key=self.api_key, requests={'verify': False})
         self.load_task_list()
 
         try:
